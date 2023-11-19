@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         fontSize: 30,
         color: '#00464e',
-        fontWeight: '900',
-        letterSpacing: 4,
+        fontWeight: '700',
+        letterSpacing: 12,
         // fontFamily: "Roboto_700Medium",
     },
 });
