@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, ScrollView, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount } from '../redux/store/tipCount/tipCount-actions';
 
@@ -61,31 +61,47 @@ const SelectTip = () => {
 
 
     return (
-        <View style={styles.actionContainer}>
+        <ScrollView style={styles.actionContainer}>
             <View style={styles.inputPlaceContainer}>
                 <Text style={styles.inputPlaceTitle}>Bill</Text>
                 <TextInput style={styles.inputPlace}
                     placeholder={billAmount === 0 ? "0.00" : ""}
                     value={billAmount === 0 ? "" : billAmount + ""}
                     keyboardType="numeric"
-                    onChangeText={handleBillAmountChange}
+                // onChangeText={handleBillAmountChange}
                 />
                 <Text style={styles.dollar}>$</Text>
             </View>
             <Text style={styles.title}>Select Tip %</Text>
             <View style={styles.btnList}>
                 {['5', '10', '15', '25', '50'].map((item: string) => (
+                    <Pressable
+                        onPress={() => {
+                            handleTipPercentageChange(parseInt(item, 10));
+                        }}
+                        style={({ pressed }) => [
+                            {
+                                backgroundColor: pressed ? '#2ac3ae' : '#00464e',
+                                color: '#00464e',
+                                // backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+                            },
+                            styles.btn,
+                        ]}>
+                        {({ pressed }) => (
+                            <Text style={styles.text}>{item}%</Text>
+                        )}
+                    </Pressable>
                     // <Button style={`${styles.btn} ${selectedPercentage === parseInt(item, 10) ? styles.selected : ''}`}
-                    <Button
-                        style={styles.btn}
-                        key={item}
-                        onClick={() => handleTipPercentageChange(parseInt(item, 10))}
-                        title={item}
-                    />
+                    // <Button
+                    //     style={styles.btn}
+                    //     key={item}
+                    //     onClick={() => handleTipPercentageChange(parseInt(item, 10))}
+                    //     title={item}
+                    // />
                 ))}
 
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -139,7 +155,7 @@ const styles = StyleSheet.create({
     actionContainer: {
         flex: 1,
         width: '100%',
-        height: '90%',
+        // height: '90%',
         backgroundColor: '#fff',
         paddingHorizontal: 38,
         borderTopLeftRadius: 20,
@@ -181,13 +197,13 @@ const styles = StyleSheet.create({
         // fontWeight: 700,
         backgroundColor: '#f3f8fb',
         marginTop: 24,
-        paddingHorizontal: 38,
+        paddingHorizontal: 16,
     },
 
     dollar: {
         position: 'absolute',
         top: 152,
-        left: 68,
+        left: 16,
         fontSize: 34,
         fontWeight: '700',
         color: '#9fbebe',
@@ -204,18 +220,15 @@ const styles = StyleSheet.create({
     },
 
     btnList: {
-        // flexGrow: 3,
-        // grid: 2,
-        // gridTemplateColumns: 'repeat(2, 290px)',
-        // grid  auto  rows: 96px,
-        // grid  column  gap: 34px,
-        // grid  row  gap: 22px,
-        // margin: 0,
-        // padding: 0,
-        flexDirection: 'row', // Головна властивість для розташування дочірніх елементів в ряд або колонку
-        justifyContent: 'space-between', // Рівномірний розподіл по головній вісі
-        // paddingHorizontal: 16, // Горизонтальний відступ для розташування кнопок
-        paddingTop: 44,
+        flex: 1,
+        flexDirection: 'row',
+        // backgroundColor: 'aliceblue',
+        maxHeight: 150,
+        flexWrap: 'wrap',
+        alignContent: 'flex-start',
+        rowGap: 36,
+        columnGap: 36,
+        paddingTop: 32,
     },
 
     btn: {
@@ -224,13 +237,19 @@ const styles = StyleSheet.create({
         // align  items: center,
         fontSize: 36,
         fontWeight: '700',
-        width: 190,
-        height: 36,
-        borderRadius: 20,
+        width: 148,
+        height: 64,
+        borderRadius: 8,
         color: ' #fff',
         backgroundColor: '#00464e',
     },
-
+    text: {
+        height: '100 %',
+        color: '#fff',
+        fontSize: 36,
+        textAlign: 'center',
+        paddingTop: 4,
+    },
     selected: {
         // btn: hover,
         // btn: focus,
@@ -238,7 +257,7 @@ const styles = StyleSheet.create({
         cursor: 'pointer',
         backgroundColor: '#2ac3ae',
         color: '#00464e',
-    }
+    },
 
     // customInputArea: {
     //         width: 218px,
@@ -329,5 +348,16 @@ const styles = StyleSheet.create({
     // }
 
 
+    wrapperCustom: {
+        borderRadius: 8,
+        padding: 6,
+    },
+    logBox: {
+        padding: 20,
+        margin: 10,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: '#f0f0f0',
+        backgroundColor: '#f9f9f9',
+    },
 
 });
