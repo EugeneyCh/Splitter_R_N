@@ -8,6 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import SelectTip from './src/components/SelectTip';
+import AmountTips from './src/components/AmountTips';
 
 export default function App() {
   return (
