@@ -14,6 +14,8 @@ export interface AppState {
   numberOfPeople: number;
   amountTip: number;
   amountTotal: number;
+  totalTips: number;
+  totalBill: number;
 }
 export interface tipCount { tipCount: AppState }
 

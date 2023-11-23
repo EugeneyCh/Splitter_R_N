@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, Pressable, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { tipCount, RESET_ALL } from '../redux/store/tipCount/tipCount-actions';
 
@@ -10,32 +10,48 @@ const AmountTips = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.amount}>
-                <Text style={styles.tipAmountTitle}>Tip Amount</Text>
-                <Text style={styles.person}>/person</Text>
+            <View style={styles.amountContainer}>
+                <View style={styles.amount}>
+                    <Text style={styles.tipAmountTitle}>Tip Amount</Text>
+                    <Text style={styles.person}>/person</Text>
+                </View>
+                <View style={styles.amountTipContainer}>
+                    <Text style={styles.amountTip}>{isNaN(amountTip) ? '0' : amountTip}</Text>
+                </View>
             </View>
-            <View style={styles.amountTipContainer}>
-                <Text style={styles.amountTip}>{isNaN(amountTip) ? '0' : amountTip}</Text>
+
+            <View style={styles.amountContainer}>
+                <View style={styles.amount}>
+                    <Text style={styles.tipAmountTitle}>Total</Text>
+                    <Text style={styles.person}>/person</Text>
+                </View>
+                <View style={styles.amountTipContainer}>
+                    <Text style={styles.amountTip}>{isNaN(amountTotal) ? '0' : amountTotal}</Text>
+                </View>
             </View>
-            <View style={styles.amount}>
-                <Text style={styles.tipAmountTitle}>Tip Amount</Text>
-                <Text style={styles.person}>/person</Text>
+
+            <View style={styles.amountContainer}>
+                <View style={styles.amount}>
+                    <Text style={styles.tipAmountTitle}>Total Tips</Text>
+                </View>
+                <View style={styles.amountTipContainer}>
+                    <Text style={styles.amountTip}>{isNaN(totalTips) ? '0' : totalTips}</Text>
+                </View>
             </View>
-            <View style={styles.amountTipContainer}>
-                <Text style={styles.amountTip}>{isNaN(amountTip) ? '0' : amountTip}</Text>
+
+
+            <View style={styles.amountContainer}>
+                <View style={styles.amount}>
+                    <Text style={styles.tipAmountTitle}>Total Bill</Text>
+                </View>
+                <View style={styles.amountTipContainer}>
+                    <Text style={styles.amountTip}>{isNaN(totalBill) ? '0' : totalBill}</Text>
+                </View>
             </View>
-            <View style={styles.amount}>
-                <Text style={styles.tipAmountTitle}>Total Tips</Text>
-            </View>
-            <View style={styles.amountTipContainer}>
-                <Text style={styles.amountTip}>{isNaN(amountTip) ? '0' : amountTip}</Text>
-            </View>
-            <View style={styles.amount}>
-                <Text style={styles.tipAmountTitle}>Total Bill</Text>
-            </View>
-            <View style={styles.amountTipContainer}>
-                <Text style={styles.amountTip}>{isNaN(amountTip) ? '0' : amountTip}</Text>
-            </View>
+            {/* <button className={css.btnReset} onClick={handleResetAction}>RESET</button> */}
+            <Pressable style={styles.btnReset} onPress={handleResetAction}>
+                <Text style={styles.btnResetText}>RESET</Text>
+            </Pressable>
         </View >
     )
 }
@@ -105,12 +121,21 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: '#00464e',
         marginTop: 66,
-        paddingTop: 36,
-        paddingLeft: 48,
-        paddingRight: 42,
+        paddingTop: 24,
+        paddingLeft: 24,
+        paddingRight: 30,
+        marginBottom: 44,
+
+    },
+    amountContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: 8,
     },
     amount: {
-        flex: 1,
+        flex: 2,
+        // flexDirection: 'row',
     },
 
     // tipContainer,
@@ -124,12 +149,20 @@ const styles = StyleSheet.create({
     //     padding-top: 36px;
     // } */
 
-
     tipAmountTitle: {
         fontSize: 24,
         fontWeight: '700',
         letterSpacing: 2,
         color: '#fff',
+    },
+
+    person: {
+        flex: 1,
+        fontSize: 20,
+        color: '#62797b',
+        fontWeight: '700',
+        letterSpacing: 2,
+        // marginTop: 12,
     },
 
     totalAmountTitle: {
@@ -139,13 +172,6 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
 
-    person: {
-        fontSize: 20,
-        color: '#62797b',
-        fontWeight: '700',
-        letterSpacing: 2,
-        marginTop: 12,
-    },
 
     amountTipContainer: {
         flex: 1,
@@ -154,21 +180,26 @@ const styles = StyleSheet.create({
 
     //    amountTotal
     amountTip: {
-        textAlign: 'center',
+        textAlign: 'right',
         fontSize: 44,
         fontWeight: '700',
         color: '#2ac3ae',
     },
 
 
-    // .btnReset {
-    //     height: 72px;
-    //     color: #00464e;
-    //     font-size: 28px;
-    //     font-weight: 700;
-    //     background-color: #2ac3ae;
-    //     border-radius: 10px;
-    //     margin-top: 24px;
+    btnReset: {
+        justifyContent: 'center',
+        height: 72,
+        backgroundColor: '#2ac3ae',
+        borderRadius: 10,
+        marginTop: 24,
+    },
 
-    // },
+    btnResetText: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        fontSize: 28,
+        color: '#00464e',
+        fontWeight: '700',
+    }
 });

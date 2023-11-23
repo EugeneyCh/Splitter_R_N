@@ -22,7 +22,6 @@ export default function App() {
           <StatusBar style="auto" />
           <SelectTip />
         </ScrollView>
-        {/* <AppNavigation /> */}
       </PersistGate>
     </Provider>
   );

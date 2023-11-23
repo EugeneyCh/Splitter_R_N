@@ -17,6 +17,8 @@ export const initialState: AppState = {
   numberOfPeople: 0,
   amountTip: 0,
   amountTotal: 0,
+  totalTips: 0,
+  totalBill: 0,
 
 };
 

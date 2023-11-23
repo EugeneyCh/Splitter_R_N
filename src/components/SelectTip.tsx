@@ -70,7 +70,7 @@ const SelectTip = () => {
                     value={billAmount === 0 ? "" : billAmount + ""}
                     keyboardType="numeric"
                     maxLength={8}
-                // onChangeText={handleBillAmountChange}
+                    onChangeText={handleBillAmountChange}
                 />
                 <Text style={styles.dollar}>$</Text>
             </View>
