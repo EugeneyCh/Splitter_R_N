@@ -39,7 +39,6 @@ const AmountTips = () => {
                 </View>
             </View>
 
-
             <View style={styles.amountContainer}>
                 <View style={styles.amount}>
                     <Text style={styles.tipAmountTitle}>Total Bill</Text>
@@ -48,68 +47,12 @@ const AmountTips = () => {
                     <Text style={styles.amountTip}>{isNaN(totalBill) ? '0' : totalBill}</Text>
                 </View>
             </View>
-            {/* <button className={css.btnReset} onClick={handleResetAction}>RESET</button> */}
             <Pressable style={styles.btnReset} onPress={handleResetAction}>
                 <Text style={styles.btnResetText}>RESET</Text>
             </Pressable>
         </View >
     )
 }
-
-
-// import { useDispatch, useSelector } from 'react-redux';
-// import { RESET_ALL, tipCount } from '../store/tipCount/tipCount-actions';
-// import css from './AmountTips.module.css';
-
-// const AmountTips = () => {
-//     const dispatch = useDispatch();
-
-//     const { amountTip, amountTotal, totalTips, totalBill } = useSelector((state: tipCount) => state.tipCount);
-
-//     const handleResetAction = () => { dispatch({ type: RESET_ALL }); }
-
-
-//     return (
-//         <div className={css.container}>
-//             <div className={css.tipContainer}>
-//                 <div className={css.amount}>
-//                     <p className={css.tipAmountTitle}>Tip Amount<span className={css.person}> /person</span></p>
-//                     {/* <p className={css.person}>/ person</p> */}
-//                 </div>
-//                 <p className={css.amountTip}>{isNaN(amountTip) ? '0' : amountTip}</p>
-//             </div>
-
-//             <div className={css.total}>
-//                 <div className={css.totalContainer}>
-//                     <div className={css.totalAmount}>
-//                         <p className={css.totalAmountTitle}>Total<span className={css.person}> /person</span></p>
-//                         {/* <p className={css.person}>/ person</p> */}
-//                     </div>
-//                     <p className={css.amountTotal}>{isNaN(amountTotal) ? '0' : amountTotal}</p>
-//                 </div>
-//             </div>
-//             <div className={css.total}>
-//                 <div className={css.totalContainer}>
-//                     <div className={css.totalAmount}>
-//                         <p className={css.totalAmountTitle}>Total Tips</p>
-//                     </div>
-//                     <p className={css.amountTotal}>{isNaN(totalTips) ? '0' : totalTips}</p>
-//                 </div>
-//             </div>
-//             <div className={css.total}>
-//                 <div className={css.totalContainer}>
-//                     <div className={css.totalAmount}>
-//                         <p className={css.totalAmountTitle}>Total Bill</p>
-//                     </div>
-//                     <p className={css.amountTotal}>{isNaN(totalBill) ? '0' : totalBill}</p>
-//                 </div>
-//             </div>
-//             <button className={css.btnReset} onClick={handleResetAction}>RESET</button>
-//         </div>
-//     )
-// }
-
-// export default AmountTips
 
 export default AmountTips;
 
@@ -122,8 +65,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#00464e',
         marginTop: 66,
         paddingTop: 24,
-        paddingLeft: 24,
-        paddingRight: 30,
+        paddingHorizontal: 24,
         marginBottom: 44,
 
     },
@@ -166,7 +108,7 @@ const styles = StyleSheet.create({
     },
 
     totalAmountTitle: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: '700',
         letterSpacing: 2,
         color: '#fff',
@@ -180,8 +122,9 @@ const styles = StyleSheet.create({
 
     //    amountTotal
     amountTip: {
+        // width: 350,
         textAlign: 'right',
-        fontSize: 44,
+        fontSize: 32,
         fontWeight: '700',
         color: '#2ac3ae',
     },

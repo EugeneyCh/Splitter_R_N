@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, ScrollView, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount } from '../redux/store/tipCount/tipCount-actions';
+import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount, SET_TOTAL_TIPS, SET_TOTAL_BILL } from '../redux/store/tipCount/tipCount-actions';
 import AmountTips from './AmountTips';
 
 
@@ -12,10 +12,15 @@ const SelectTip = () => {
 
     const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
 
-    const handleBillAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const amount = parseFloat(event.target.value);
+    // const handleBillAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const amount = parseFloat(event.target.value);
+    //     dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
+    //     calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople)
+    // };
+    const handleBillAmountChange = (value: string) => {
+        const amount = parseFloat(value);
         dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
-        calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople)
+        calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople);
     };
 
     const handleTipPercentageChange = (percentage: number) => {
@@ -24,37 +29,66 @@ const SelectTip = () => {
         calculatePersonalBill(billAmount, percentage, tipPercentageCustom, numberOfPeople)
     };
 
-    const handleTipPercentageCustomChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const percCustom = parseFloat(event.target.value);
+    const handleTipPercentageCustomChange = (value: string) => {
+        const percCustom = parseFloat(value);
         dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: isNaN(percCustom) ? 0 : percCustom });
         setSelectedPercentage(null);
         calculatePersonalBill(billAmount, percCustom, tipPercentageCustom, numberOfPeople)
     };
 
-    const handleNumberOfPeopleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const count = parseInt(event.target.value, 10);
-        if (count < 0 || isNaN(count)) {
-            alert("Number of people must be a positive integer");
-            return;
-        }
+    const handleNumberOfPeopleChange = (value: string) => {
+        const count = parseInt(value, 10);
+        // if (count < 0 || isNaN(count)) {
+        //     alert("Number of people must be a positive integer");
+        //     return;
+        // }
         dispatch({ type: SET_NUMBER_OF_PEOPLE, payload: isNaN(count) ? 0 : count });
         calculatePersonalBill(billAmount, tipPercentage, tipPercentageCustom, count)
 
     };
 
-    const calculatePersonalBill = (billAmount: number, tipPercentage: number, tipPercentageCustom: number, numberOfPeople: number) => {
+    // const calculatePersonalBill = (billAmount: number, tipPercentage: number, tipPercentageCustom: number, numberOfPeople: number) => {
+    //     if (billAmount <= 0) return;
+    //     if ((tipPercentage > 0 || tipPercentageCustom > 0) && numberOfPeople >= 1) {
+    //         const selectedTipPercentage = tipPercentage > 0 ? tipPercentage : tipPercentageCustom;
+    //         const totalPersonalTip = (billAmount / numberOfPeople * selectedTipPercentage / 100).toFixed(2);
+    //         const totalPersonalAmount = (billAmount / numberOfPeople * (1 + selectedTipPercentage / 100)).toFixed(2);
+    //         dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
+    //         dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
+    //     } else if (tipPercentage === 0 && tipPercentageCustom === 0 && numberOfPeople > 0) {
+    //         const totalPersonalTip = 0;
+    //         const totalPersonalAmount = (billAmount / numberOfPeople).toFixed(2);
+    //         dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
+    //         dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
+    //     }
+
+
+    // }
+    const calculatePersonalBill = (billAmount: number, tipPercentage: number, tipPercentageCustom: number | null, numberOfPeople: number) => {
+        const tipCustom: number = (tipPercentageCustom === null || tipPercentageCustom === 0) ? 0 : tipPercentageCustom;
         if (billAmount <= 0) return;
-        if ((tipPercentage > 0 || tipPercentageCustom > 0) && numberOfPeople >= 1) {
-            const selectedTipPercentage = tipPercentage > 0 ? tipPercentage : tipPercentageCustom;
-            const totalPersonalTip = (billAmount / numberOfPeople * selectedTipPercentage / 100).toFixed(2);
-            const totalPersonalAmount = (billAmount / numberOfPeople * (1 + selectedTipPercentage / 100)).toFixed(2);
+        if (tipPercentage > 0 || tipCustom > 0) {
+            const selectedTipPercentage = tipPercentage > 0 ? tipPercentage : tipCustom;
+            const selectedNumberOfPeople = numberOfPeople > 0 ? numberOfPeople : 1;
+            const totalPersonalTip = (billAmount / selectedNumberOfPeople * selectedTipPercentage / 100).toFixed(2);
+            const totalPersonalAmount = (billAmount / selectedNumberOfPeople * (1 + selectedTipPercentage / 100)).toFixed(2);
+            const totalTips = (billAmount * selectedTipPercentage / 100).toFixed(2);
+            const totalBill = (billAmount * (1 + selectedTipPercentage / 100)).toFixed(2);
+
             dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
             dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
-        } else if (tipPercentage === 0 && tipPercentageCustom === 0 && numberOfPeople > 0) {
+            dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
+            dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
+
+        } else if (tipPercentage === 0 && tipCustom === 0 && numberOfPeople === 0) {
             const totalPersonalTip = 0;
-            const totalPersonalAmount = (billAmount / numberOfPeople).toFixed(2);
+            const totalPersonalAmount = billAmount.toFixed(2);
+            const totalTips = 0;
+            const totalBill = (billAmount).toFixed(2);
             dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
             dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
+            dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
+            dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
         }
 
 
@@ -88,7 +122,8 @@ const SelectTip = () => {
                                 // backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
                             },
                             styles.btn,
-                        ]}>
+                        ]}
+                    >
                         {({ pressed }) => (
                             <Text style={styles.text}>{item}%</Text>
                         )}
@@ -98,18 +133,19 @@ const SelectTip = () => {
                     <TextInput style={styles.customInput}
                         placeholder={tipPercentageCustom === 0 ? "Custom" : ""}
                         // value={tipPercentageCustom === 0 ? "" : tipPercentageCustom}
-                        // onChange={handleTipPercentageCustomChange}
+                        onChangeText={handleTipPercentageCustomChange}
                         maxLength={8}
-                        keyboardType="numeric" />
+                        keyboardType="numeric"
+                    />
                 </View>
             </View>
             <View style={styles.countPeopleContainer}>
                 <Text style={styles.countPeopleTitle}>Number of People</Text>
                 <TextInput style={styles.countPeopleInput}
                     placeholder={numberOfPeople <= 0 ? "Enter a valid number" : ""}
-                    // value={numberOfPeople <= 0 ? "" : numberOfPeople.toString()}
-                    // onChange={handleNumberOfPeopleChange}
-                    maxLength={3}
+                    value={numberOfPeople <= 0 ? "" : numberOfPeople.toString()}
+                    onChangeText={handleNumberOfPeopleChange}
+                    maxLength={4}
                     keyboardType="numeric" />
             </View>
             <AmountTips />
