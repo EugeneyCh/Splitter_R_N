@@ -63,9 +63,9 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 20,
         backgroundColor: '#00464e',
-        marginTop: 66,
+        marginTop: 48,
         paddingTop: 24,
-        paddingHorizontal: 24,
+        paddingHorizontal: 18,
         marginBottom: 44,
 
     },
@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
         paddingTop: 8,
     },
     amount: {
-        flex: 2,
+        flex: 1,
+        // width: 150,
         // flexDirection: 'row',
     },
 
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
     // } */
 
     tipAmountTitle: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: '700',
         letterSpacing: 2,
         color: '#fff',
@@ -100,31 +101,32 @@ const styles = StyleSheet.create({
 
     person: {
         flex: 1,
-        fontSize: 20,
+        fontSize: 16,
         color: '#62797b',
         fontWeight: '700',
         letterSpacing: 2,
         // marginTop: 12,
     },
 
-    totalAmountTitle: {
-        fontSize: 20,
-        fontWeight: '700',
-        letterSpacing: 2,
-        color: '#fff',
-    },
+    // totalAmountTitle: {
+    //     fontSize: 20,
+    //     fontWeight: '700',
+    //     letterSpacing: 2,
+    //     color: '#fff',
+    // },
 
 
     amountTipContainer: {
-        flex: 1,
+        // flex: 1,
+        justifyContent: 'space-between',
     },
 
 
     //    amountTotal
     amountTip: {
-        // width: 350,
+        width: 140,
         textAlign: 'right',
-        fontSize: 32,
+        fontSize: 36,
         fontWeight: '700',
         color: '#2ac3ae',
     },
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
         height: 72,
         backgroundColor: '#2ac3ae',
         borderRadius: 10,
-        marginTop: 24,
+        marginTop: 76,
     },
 
     btnResetText: {

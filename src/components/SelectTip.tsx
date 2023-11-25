@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, ScrollView, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount, SET_TOTAL_TIPS, SET_TOTAL_BILL } from '../redux/store/tipCount/tipCount-actions';
@@ -7,6 +7,8 @@ import AmountTips from './AmountTips';
 
 const SelectTip = () => {
 
+    const [isButtonPressed, setIsButtonPressed] = useState(false);
+    const inputRef = useRef(null);
     const dispatch = useDispatch();
     const { billAmount, tipPercentage, tipPercentageCustom, numberOfPeople } = useSelector((state: tipCount) => state.tipCount);
 
@@ -29,41 +31,41 @@ const SelectTip = () => {
         calculatePersonalBill(billAmount, percentage, tipPercentageCustom, numberOfPeople)
     };
 
+    // const handleTipPercentageCustomChange = (value: string) => {
+    //     const percCustom = parseFloat(value);
+    //     dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: isNaN(percCustom) ? 0 : percCustom });
+    //     setSelectedPercentage(null);
+    //     calculatePersonalBill(billAmount, tipPercentage, percCustom, numberOfPeople);
+
+    //     // const input = customInputRef.current;
+    //     // if (input) {
+    //     //     input.setNativeProps({
+    //     //         selection: { start: 2, end: 3 } // Змініть ці значення залежно від ваших потреб
+    //     //     });
+    //     // }
+    // };
+
     const handleTipPercentageCustomChange = (value: string) => {
-        const percCustom = parseFloat(value);
-        dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: isNaN(percCustom) ? 0 : percCustom });
-        setSelectedPercentage(null);
-        calculatePersonalBill(billAmount, percCustom, tipPercentageCustom, numberOfPeople)
+        // let formattedValue = value.trim(); // Видаляємо зайві пробіли з початку та кінця введеного значення
+        const percCustom = parseFloat(value.replace(/[^0-9.]/g, '')); // Залишаємо лише цифри та крапку
+        // formattedValue += ' %'; // Додаємо пробіл та знак проценту
+
+        dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: percCustom });
+        calculatePersonalBill(billAmount, tipPercentage, percCustom, numberOfPeople);
+        // Маніпулюємо курсором, щоб він залишався на позиції за останнім введеним символом
+        // const cursorPosition = formattedValue.length - 1; // -2, бо ми додали пробіл і знак проценту
+        // inputRef.current.setNativeProps({ selection: { start: cursorPosition, end: cursorPosition } });
     };
 
+
     const handleNumberOfPeopleChange = (value: string) => {
+
         const count = parseInt(value, 10);
-        // if (count < 0 || isNaN(count)) {
-        //     alert("Number of people must be a positive integer");
-        //     return;
-        // }
         dispatch({ type: SET_NUMBER_OF_PEOPLE, payload: isNaN(count) ? 0 : count });
         calculatePersonalBill(billAmount, tipPercentage, tipPercentageCustom, count)
 
     };
 
-    // const calculatePersonalBill = (billAmount: number, tipPercentage: number, tipPercentageCustom: number, numberOfPeople: number) => {
-    //     if (billAmount <= 0) return;
-    //     if ((tipPercentage > 0 || tipPercentageCustom > 0) && numberOfPeople >= 1) {
-    //         const selectedTipPercentage = tipPercentage > 0 ? tipPercentage : tipPercentageCustom;
-    //         const totalPersonalTip = (billAmount / numberOfPeople * selectedTipPercentage / 100).toFixed(2);
-    //         const totalPersonalAmount = (billAmount / numberOfPeople * (1 + selectedTipPercentage / 100)).toFixed(2);
-    //         dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
-    //         dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
-    //     } else if (tipPercentage === 0 && tipPercentageCustom === 0 && numberOfPeople > 0) {
-    //         const totalPersonalTip = 0;
-    //         const totalPersonalAmount = (billAmount / numberOfPeople).toFixed(2);
-    //         dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
-    //         dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
-    //     }
-
-
-    // }
     const calculatePersonalBill = (billAmount: number, tipPercentage: number, tipPercentageCustom: number | null, numberOfPeople: number) => {
         const tipCustom: number = (tipPercentageCustom === null || tipPercentageCustom === 0) ? 0 : tipPercentageCustom;
         if (billAmount <= 0) return;
@@ -112,30 +114,36 @@ const SelectTip = () => {
             <View style={styles.btnList}>
                 {['5', '10', '15', '25', '50'].map((item: string) => (
                     <Pressable key={item}
+                        // style={styles.btn}
                         onPress={() => {
                             handleTipPercentageChange(parseInt(item, 10));
+                            setIsButtonPressed(true);
+                        }}
+                        onPressOut={() => {
+                            setIsButtonPressed(false);
                         }}
                         style={({ pressed }) => [
                             {
-                                backgroundColor: pressed ? '#2ac3ae' : '#00464e',
-                                color: '#00464e',
+                                backgroundColor: pressed || (tipPercentage === parseInt(item, 10)) ? '#2ac3ae' : '#00464e',
+                                color: pressed || (tipPercentage === parseInt(item, 10)) ? '#00464e' : '#fff',
                                 // backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
                             },
                             styles.btn,
                         ]}
                     >
                         {({ pressed }) => (
-                            <Text style={styles.text}>{item}%</Text>
+                            <Text style={styles.text}>{item} %</Text>
                         )}
                     </Pressable>
                 ))}
                 <View style={styles.customInputArea}>
                     <TextInput style={styles.customInput}
                         placeholder={tipPercentageCustom === 0 ? "Custom" : ""}
-                        // value={tipPercentageCustom === 0 ? "" : tipPercentageCustom}
+                        value={tipPercentageCustom === 0 ? "" : tipPercentageCustom.toString()}
                         onChangeText={handleTipPercentageCustomChange}
-                        maxLength={8}
+                        maxLength={4}
                         keyboardType="numeric"
+                        ref={inputRef}
                     />
                 </View>
             </View>
@@ -149,7 +157,7 @@ const SelectTip = () => {
                     keyboardType="numeric" />
             </View>
             <AmountTips />
-        </View>
+        </View >
     )
 }
 
@@ -163,7 +171,7 @@ const styles = StyleSheet.create({
         width: '100%',
         // height: '90%',
         backgroundColor: '#fff',
-        paddingHorizontal: 38,
+        paddingHorizontal: 24,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },
@@ -191,10 +199,8 @@ const styles = StyleSheet.create({
     inputPlace: {
         // inlineImageLeft='search_icon'   !!!
         height: 92,
-        // maxLength: 8,
-        // textAlign: 'center',
         borderRadius: 10,
-        // color: '#00464e',
+        color: '#00464e',
         fontSize: 34,
         textAlign: 'right',
         fontWeight: '700',
@@ -207,7 +213,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 152,
         left: 16,
-        fontSize: 34,
+        fontSize: 36,
         fontWeight: '700',
         color: '#9fbebe',
     },
@@ -228,19 +234,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignContent: 'flex-start',
-        rowGap: 36,
-        columnGap: 36,
+        rowGap: 24,
+        columnGap: 24,
         paddingTop: 32,
     },
 
     btn: {
         fontSize: 36,
         fontWeight: '700',
-        width: 148,
+        width: 168,
         height: 64,
         borderRadius: 8,
-        color: '#fff',
-        backgroundColor: '#00464e',
+        // color: '#fff',
+        // backgroundColor: '#00464e',
     },
     text: {
         height: '100 %',
@@ -271,7 +277,7 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: '700',
         borderRadius: 10,
-        color: '#62797b',
+        color: '#00464e',
         backgroundColor: '#f3f8fb',
         paddingHorizontal: 16,
     },
