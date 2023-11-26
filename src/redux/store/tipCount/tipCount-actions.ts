@@ -10,7 +10,7 @@ export const SET_TOTAL_BILL = 'SET_TOTAL_BILL';
 export const RESET_ALL = 'RESET_ALL';
 
 export interface AppState {
-  billAmount: number;
+  billAmount: string;
   tipPercentage: number;
   tipPercentageCustom: number;
   numberOfPeople: number;
@@ -23,7 +23,7 @@ export interface tipCount { tipCount: AppState }
 
 interface SetBillAmountAction {
   type: typeof SET_BILL_AMOUNT;
-  payload: number;
+  payload: string;
 }
 
 interface SetTipPercentageAction {
