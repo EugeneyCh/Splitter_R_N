@@ -27,40 +27,59 @@ const SelectTip = () => {
     //     calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople)
     // };
 
-    const handleBillAmountChange = (text: string) => {
-        // Фільтрація введених символів: лише цифри та крапки
-        // const filteredText = text.replace(/[^\d,]+/g, match => (match === ',' ? ',' : ''));
-        // const filteredText = text.replace(/[^\d,]+/g, '');
-        const filteredText = text
-            .replace(/[^\d,]+/g, match => (match === ',' ? ',' : ''))
-            .replace(/,(?=,)/g, '')
-            .replace(/(,\d{2})\d+/g, '$1')
-            .split(',') // Розділити рядок за комами
-            // .filter(part => part.trim() !== '') // Видалити порожні частини
-            .map((part, index) => (index === 0 ? part : index === 1 ? part.slice(0, 2) : '')) // Зберегти першу частину незмінною, обрізати другу до двох цифр
-            .join(','); // З'єднати знову розділені частини комами
+    // const handleBillAmountChange = (text: string) => {
+    //     // Фільтрація введених символів: лише цифри та крапки
+    //     // const filteredText = text.replace(/[^\d,]+/g, match => (match === ',' ? ',' : ''));
+    //     // const filteredText = text.replace(/[^\d,]+/g, '');
+    //     const filteredText = text
+    //         .replace(/[^\d,]+/g, '')
+    //         .replace(/,(?=,)/g, '')
+    //         .replace(/(,\d{2})\d+/g, '$1')
+    //     // .split(',') // Розділити рядок за комами
+    //     // // .filter(part => part.trim() !== '') // Видалити порожні частини
+    //     // .map((part, index) => (index === 0 ? part : part.slice(0, 2))) // Зберегти першу частину незмінною, обрізати другу до двох цифр
+    //     // .join(',') // З'єднати знову розділені частини комами
 
-        console.log(filteredText);
-        // Якщо є більше однієї крапки, ігноруємо дубльовану
-        // const dotCount = filteredText.split('.').length - 1;
-        // if (dotCount > 1) {
-        //     return;
-        // }...jjj
+    //     console.log(filteredText);
+    //     console.log(inputValue);
+    //     // Якщо є більше однієї крапки, ігноруємо дубльовану
+    //     // const dotCount = filteredText.split('.').length - 1;
+    //     // if (dotCount > 1) {
+    //     //     return;
+    //     // }
+
+    //     // Розділення частин до та після крапки
+    //     const [integerPart, decimalPart] = filteredText.split(',');
+
+    //     // Обрізка до двох цифр після крапки
+    //     const truncatedDecimalPart = decimalPart ? decimalPart.slice(0, 2) : '';
+
+    //     // Збирання обробленого значення
+    //     const formattedValue = decimalPart
+    //         ? `${integerPart},${truncatedDecimalPart}`
+    //         : integerPart;
+
+    //     setInputValue(filteredText);
+    // };
+
+
+    const handleBillAmountChange = (text: string) => {
+        // Фільтрація введених символів: лише цифри та крапка, але не більше однієї крапки
+        const filteredText = text.replace(/[^\d.]+/g, match => (match === '.' ? '.' : ''));
 
         // Розділення частин до та після крапки
-        const [integerPart, decimalPart] = filteredText.split(',');
+        const [integerPart, decimalPart] = filteredText.split('.');
 
         // Обрізка до двох цифр після крапки
         const truncatedDecimalPart = decimalPart ? decimalPart.slice(0, 2) : '';
 
         // Збирання обробленого значення
         const formattedValue = decimalPart
-            ? `${integerPart},${truncatedDecimalPart}`
+            ? `${integerPart}.${truncatedDecimalPart}`
             : integerPart;
 
-        setInputValue(filteredText);
+        setInputValue(formattedValue);
     };
-
 
     const handleTipPercentageChange = (percentage: number) => {
         dispatch({ type: SET_TIP_PERCENTAGE, payload: percentage });
@@ -119,8 +138,8 @@ const SelectTip = () => {
             <View style={styles.inputPlaceContainer}>
                 <Text style={styles.inputPlaceTitle}>Bill</Text>
                 <TextInput style={styles.inputPlace}
-                    placeholder={inputValue === '0' ? "0" : ""}
-                    value={inputValue === '0' ? "" : inputValue}
+                    placeholder={inputValue === "0" ? "0" : ""}
+                    value={inputValue === "0" ? "" : inputValue}
                     keyboardType="numeric"
                     maxLength={12}
                     onChangeText={handleBillAmountChange}
