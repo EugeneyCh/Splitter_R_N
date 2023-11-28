@@ -13,11 +13,6 @@ const SelectTip = () => {
 
     const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
 
-    // const handleBillAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const amount = parseFloat(event.target.value);
-    //     dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
-    //     calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople)
-    // };
     const handleBillAmountChange = (value: string) => {
         const amount = parseFloat(value);
         dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
@@ -34,10 +29,11 @@ const SelectTip = () => {
         const percCustom = parseFloat(value);
         dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: isNaN(percCustom) ? 0 : percCustom });
         setSelectedPercentage(null);
-        calculatePersonalBill(billAmount, percCustom, tipPercentageCustom, numberOfPeople)
+        calculatePersonalBill(billAmount, tipPercentage, percCustom, numberOfPeople)
     };
 
     const handleNumberOfPeopleChange = (value: string) => {
+        22
         const count = parseInt(value, 10);
         dispatch({ type: SET_NUMBER_OF_PEOPLE, payload: isNaN(count) ? 0 : count });
         calculatePersonalBill(billAmount, tipPercentage, tipPercentageCustom, count)
@@ -92,7 +88,6 @@ const SelectTip = () => {
             <View style={styles.btnList}>
                 {['5', '10', '15', '25', '50'].map((item: string) => (
                     <Pressable key={item}
-                        // style={styles.btn}
                         onPress={() => {
                             handleTipPercentageChange(parseInt(item, 10));
                             setIsButtonPressed(true);
@@ -103,8 +98,7 @@ const SelectTip = () => {
                         style={({ pressed }) => [
                             {
                                 backgroundColor: pressed || (tipPercentage === parseInt(item, 10)) ? '#2ac3ae' : '#00464e',
-                                color: pressed || isButtonPressed ? '#00464e' : '#fff',
-                                // backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+                                color: pressed || (tipPercentage === parseInt(item, 10)) ? '#00464e' : '#fff',
                             },
                             styles.btn,
                         ]}
@@ -117,9 +111,9 @@ const SelectTip = () => {
                 <View style={styles.customInputArea}>
                     <TextInput style={styles.customInput}
                         placeholder={tipPercentageCustom === 0 ? "Custom" : ""}
-                        value={tipPercentageCustom === 0 ? "" : tipPercentageCustom + ''}
+                        value={tipPercentageCustom === 0 ? "" : tipPercentageCustom + ' %'}
                         onChangeText={handleTipPercentageCustomChange}
-                        maxLength={8}
+                        maxLength={5}
                         keyboardType="numeric"
                     />
                 </View>
@@ -146,7 +140,6 @@ const styles = StyleSheet.create({
     actionContainer: {
         flex: 1,
         width: '100%',
-        // height: '90%',
         backgroundColor: '#fff',
         paddingHorizontal: 24,
         borderTopLeftRadius: 20,
@@ -154,17 +147,13 @@ const styles = StyleSheet.create({
     },
 
     inputPlaceContainer: {
-        // position: 'relative',
         flex: 1,
         justifyContent: 'flex-start',
-        // marginTop: 76,
 
     },
     inputPlaceTitle: {
         position: 'relative',
         flex: 1,
-        // justifyContent: 'flex-start',
-        // height: 142,
         width: '100 %',
         fontSize: 22,
         fontWeight: '700',
@@ -222,8 +211,6 @@ const styles = StyleSheet.create({
         width: 168,
         height: 64,
         borderRadius: 8,
-        // color: '#fff',
-        // backgroundColor: '#00464e',
     },
     text: {
         height: '100 %',
@@ -233,14 +220,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingTop: 4,
     },
-    // selected: {
-    //     // btn: hover,
-    //     // btn: focus,
-    //     // btn: active 
-    //     cursor: 'pointer',
-    //     backgroundColor: '#2ac3ae',
-    //     color: '#00464e',
-    // },
 
     customInputArea: {
         flex: 1,
@@ -259,40 +238,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
 
-    // customInputselected: {
-    //         border: 2px solid #62797b,
-    //     }
-
-    // customInput:: placeholder: {
-    //         text  align: center,
-    //     },
-
-    //         /* .btn,
-    //         .btn:last-child {
-    //             display: flex,
-    //             justify-content: center;
-    //             align-items: center;
-    //             font-size: 36px;
-    //             font-weight: 700;
-    //             width: 290px;
-    //             height: 96px;
-    //             border-radius: 10px;
-    //             color: #fff;
-    //             background-color: #00464e;
-    //         } */
-    //         .selected,
-    //     .btn: hover,
-    //     .btn: focus,
-    //     .btn: active {
-    //     cursor: pointer;
-    //     background - color: #2ac3ae;
-    // color: #00464e;
-    // },
-
-    //     /* .btn:last-child {
-    //         color: #62797b;
-    //         background-color: #f3f8fb;
-    //     } */
 
     countPeopleContainer: {
         flex: 1,

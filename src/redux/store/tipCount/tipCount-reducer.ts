@@ -13,7 +13,7 @@ import {
 } from './tipCount-actions';
 
 export const initialState: AppState = {
-  billAmount: "0",
+  billAmount: 0,
   tipPercentage: 0,
   tipPercentageCustom: 0,
   numberOfPeople: 0,
