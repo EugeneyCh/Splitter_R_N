@@ -3,6 +3,7 @@ import { Button, ScrollView, Pressable, StyleSheet, Text, TextInput, View } from
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount, SET_TOTAL_TIPS, SET_TOTAL_BILL } from '../redux/store/tipCount/tipCount-actions';
 import AmountTips from './AmountTips';
+import ValidationTextInput from './ValidationTextInput';
 
 
 const SelectTip = () => {
@@ -13,11 +14,6 @@ const SelectTip = () => {
 
     const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
 
-    // const handleBillAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const amount = parseFloat(event.target.value);
-    //     dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
-    //     calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople)
-    // };
     const handleBillAmountChange = (value: string) => {
         const amount = parseFloat(value);
         dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
@@ -34,10 +30,11 @@ const SelectTip = () => {
         const percCustom = parseFloat(value);
         dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: isNaN(percCustom) ? 0 : percCustom });
         setSelectedPercentage(null);
-        calculatePersonalBill(billAmount, percCustom, tipPercentageCustom, numberOfPeople)
+        calculatePersonalBill(billAmount, tipPercentage, percCustom, numberOfPeople)
     };
 
     const handleNumberOfPeopleChange = (value: string) => {
+        22
         const count = parseInt(value, 10);
         dispatch({ type: SET_NUMBER_OF_PEOPLE, payload: isNaN(count) ? 0 : count });
         calculatePersonalBill(billAmount, tipPercentage, tipPercentageCustom, count)
@@ -79,13 +76,19 @@ const SelectTip = () => {
         <View style={styles.actionContainer}>
             <View style={styles.inputPlaceContainer}>
                 <Text style={styles.inputPlaceTitle}>Bill</Text>
-                <TextInput style={styles.inputPlace}
-                    placeholder={billAmount === 0 ? "0.00" : ""}
-                    value={billAmount === 0 ? "" : billAmount + ""}
+                <ValidationTextInput
+                    placeholder="Bill"
+                    regex={/[^0-9.]/g, ''}
+                    validationMessage="Please enter a valid sum"
+                />
+
+                {/* <TextInput style={styles.inputPlace}
+                    placeholder={billAmount === '0' ? "0.00" : ""}
+                    value={billAmount === '0' ? "" : billAmount + ""}
                     keyboardType="numeric"
                     maxLength={8}
                     onChangeText={handleBillAmountChange}
-                />
+                /> */}
                 <Text style={styles.dollar}>$</Text>
             </View>
             <Text style={styles.title}>Select Tip %</Text>
@@ -103,7 +106,7 @@ const SelectTip = () => {
                         style={({ pressed }) => [
                             {
                                 backgroundColor: pressed || (tipPercentage === parseInt(item, 10)) ? '#2ac3ae' : '#00464e',
-                                color: pressed || isButtonPressed ? '#00464e' : '#fff',
+                                color: pressed || (tipPercentage === parseInt(item, 10)) ? '#00464e' : '#fff',
                                 // backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
                             },
                             styles.btn,
@@ -117,9 +120,9 @@ const SelectTip = () => {
                 <View style={styles.customInputArea}>
                     <TextInput style={styles.customInput}
                         placeholder={tipPercentageCustom === 0 ? "Custom" : ""}
-                        value={tipPercentageCustom === 0 ? "" : tipPercentageCustom + ''}
+                        value={tipPercentageCustom === 0 ? "" : tipPercentageCustom + ' %'}
                         onChangeText={handleTipPercentageCustomChange}
-                        maxLength={8}
+                        maxLength={5}
                         keyboardType="numeric"
                     />
                 </View>
