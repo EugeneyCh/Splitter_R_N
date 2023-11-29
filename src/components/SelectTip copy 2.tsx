@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, ScrollView, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount, SET_TOTAL_TIPS, SET_TOTAL_BILL } from '../redux/store/tipCount/tipCount-actions';
+import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount, SET_TOTAL_TIPS, SET_TOTAL_BILL, Props } from '../redux/store/tipCount/tipCount-actions';
 import AmountTips from './AmountTips';
 
 

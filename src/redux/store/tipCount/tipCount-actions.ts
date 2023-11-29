@@ -6,7 +6,6 @@ export const SET_PERSONAL_TIP = 'SET_PERSONAL_TIP';
 export const SET_PERSONAL_AMOUNT = 'SET_PERSONSL_AMOUNT';
 export const SET_TOTAL_TIPS = 'SET_TOTAL_TIPS';
 export const SET_TOTAL_BILL = 'SET_TOTAL_BILL';
-
 export const RESET_ALL = 'RESET_ALL';
 
 export interface AppState {
@@ -70,3 +69,10 @@ export type AppAction =
   | SetTotalTipsAction
   | SetTotalBillAction
   | ResetAction;
+
+
+export interface Props {
+  placehoolder: string;
+  regex: string;
+  validatonMessage: string;
+}
