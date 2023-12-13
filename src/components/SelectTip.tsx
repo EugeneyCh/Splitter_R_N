@@ -119,10 +119,9 @@ const SelectTip = () => {
                         placeholder={tipPercentageCustom === 0 ? "Custom" : ""}
                         value={tipPercentageCustom === 0 ? "" : tipPercentageCustom + ''}
                         onChangeText={handleTipPercentageCustomChange}
-                        maxLength={2}
+                        maxLength={8}
                         keyboardType="numeric"
                     />
-                    {tipPercentageCustom !== 0 && <Text style={styles.percentSign}>%</Text>}
                 </View>
             </View>
             <View style={styles.countPeopleContainer}>
@@ -255,19 +254,9 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: '700',
         borderRadius: 10,
-        color: '#00464e',
+        color: '#62797b',
         backgroundColor: '#f3f8fb',
         paddingHorizontal: 16,
-    },
-    percentSign: {
-        position: 'absolute',
-        fontSize: 28,
-        fontWeight: '700',
-        color: '#00464e',
-        right: 40,
-        top: 12,
-
-
     },
 
     // customInputselected: {
