@@ -6,20 +6,51 @@ import AmountTips from './AmountTips';
 
 
 const SelectTip = () => {
+    const dispatch = useDispatch();
+    const { tipPercentage, tipPercentageCustom, numberOfPeople } = useSelector((state: tipCount) => state.tipCount);
+    const [billAmountString, setBillAmountString] = useState('0')
+    const billAmount: number = parseFloat(billAmountString);
 
     const [isButtonPressed, setIsButtonPressed] = useState(false);
-    const dispatch = useDispatch();
-    const { billAmount, tipPercentage, tipPercentageCustom, numberOfPeople } = useSelector((state: tipCount) => state.tipCount);
 
     const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
 
-    // const handleBillAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const amount = parseFloat(event.target.value);
-    //     dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
-    //     calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople)
-    // };
+    function checkValue(value: string) {
+        setBillAmountString(handleDecimalsOnValue(value));
+    }
+
+    function handleDecimalsOnValue(value: string): string {
+        const regex = /([0-9]*[\\.,]{0,1}[0-9]{0,2})/s;
+        const match = value.match(regex);
+        console.log(value, match);
+
+        if (match && match[0] !== null) {
+            return match[0];
+        } else {
+            return "";
+        }
+    }
+
+
+    const amountCheck = (value: string) => {
+        const amount: string = handleDecimalsOnValue(value);
+
+        if (amount === "") return -1;
+        if (amount[amount.length - 1] === "." || amount[amount.length - 1] === ",") {
+            return parseFloat(amount.slice(0, -1))
+        }
+        else {
+            return parseFloat(amount);
+        }
+    }
+
+
     const handleBillAmountChange = (value: string) => {
-        const amount = parseFloat(value);
+        // const amount = parseFloat(value);
+        const amount: number = amountCheck(value)
+        // console.log(value);
+        // console.log(amount);
+
         dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
         calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople);
     };
@@ -82,9 +113,10 @@ const SelectTip = () => {
                 <TextInput style={styles.inputPlace}
                     placeholder={billAmount === 0 ? "0.00" : ""}
                     value={billAmount === 0 ? "" : billAmount + ""}
-                    keyboardType="decimal-pad"
+                    keyboardType="numeric"
                     maxLength={8}
-                    onChangeText={handleBillAmountChange}
+                    onChangeText={checkValue}
+                // onBlur={(e) => handleBillAmountChange(e.nativeEvent.text)}
                 />
                 <Text style={styles.dollar}>$</Text>
             </View>
@@ -119,9 +151,10 @@ const SelectTip = () => {
                         placeholder={tipPercentageCustom === 0 ? "Custom" : ""}
                         value={tipPercentageCustom === 0 ? "" : tipPercentageCustom + ''}
                         onChangeText={handleTipPercentageCustomChange}
-                        maxLength={8}
+                        maxLength={2}
                         keyboardType="numeric"
                     />
+                    {tipPercentageCustom !== 0 && <Text style={styles.percentSign}>%</Text>}
                 </View>
             </View>
             <View style={styles.countPeopleContainer}>
@@ -254,9 +287,19 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: '700',
         borderRadius: 10,
-        color: '#62797b',
+        color: '#00464e',
         backgroundColor: '#f3f8fb',
         paddingHorizontal: 16,
+    },
+    percentSign: {
+        position: 'absolute',
+        fontSize: 28,
+        fontWeight: '700',
+        color: '#00464e',
+        right: 40,
+        top: 12,
+
+
     },
 
     // customInputselected: {
