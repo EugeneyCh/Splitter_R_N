@@ -20,11 +20,12 @@ const SelectTip = () => {
     }
 
     function handleDecimalsOnValue(value: string): string {
+
         const regex = /([0-9]*[\\.,]{0,1}[0-9]{0,2})/s;
         const match = value.match(regex);
-        console.log(value, match);
+        // console.log(value, match);
 
-        if (match && match[0] !== null) {
+        if (match && match[0] !== undefined) {
             return match[0];
         } else {
             return "";
