@@ -13,6 +13,7 @@ const SelectTip = () => {
 
     const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
 
+
     const handleBillAmountChange = (value: string) => {
         const amount = parseFloat(value);
         dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
