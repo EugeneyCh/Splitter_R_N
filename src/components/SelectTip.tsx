@@ -1,76 +1,125 @@
 import React, { useState } from 'react';
-import { Button, ScrollView, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount, SET_TOTAL_TIPS, SET_TOTAL_BILL } from '../redux/store/tipCount/tipCount-actions';
 import AmountTips from './AmountTips';
 
 
 const SelectTip = () => {
+    const dispatch = useDispatch();
+    const { tipPercentage, tipPercentageCustom, numberOfPeople } = useSelector((state: tipCount) => state.tipCount);
+    const [billAmountString, setBillAmountString] = useState<string>('0')
+    const billAmount: number = billAmountString !== '' ? parseFloat(billAmountString) : 0;
 
     const [isButtonPressed, setIsButtonPressed] = useState(false);
-    const dispatch = useDispatch();
-    const { billAmount, tipPercentage, tipPercentageCustom, numberOfPeople } = useSelector((state: tipCount) => state.tipCount);
 
-    const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
+    // const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
 
-    // const handleBillAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const amount = parseFloat(event.target.value);
-    //     dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
-    //     calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople)
-    // };
+    function checkValue(value: string) {
+        // console.log('Value is ...', value);
+        setBillAmountString(handleDecimalsOnValue(value));
+    }
+
+    function handleDecimalsOnValue(value: string): string {
+
+        const regex = /([0-9]*[\\.,]{0,1}[0-9]{0,2})/s;
+        const match = value === undefined ? '' : value.replace(/,/g, ".").match(regex);
+
+        if (match && match[0] !== null) {
+            return match[0];
+        } else {
+            return "";
+        }
+    }
+
+
+    const amountCheck = (value: string) => {
+        const amount: string = handleDecimalsOnValue(value);
+
+        if (amount === "") return -1;
+        if (amount[amount.length - 1] === "." || amount[amount.length - 1] === ",") {
+            return parseFloat(amount.slice(0, -1))
+        }
+        else {
+            return parseFloat(amount);
+        }
+    }
+
+    const handleReset = () => {
+        setBillAmountString('0');
+    };
+
+
     const handleBillAmountChange = (value: string) => {
-        const amount = parseFloat(value);
-        dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : amount });
+        console.log('Value = ', value);
+
+        // const amount = parseFloat(value);
+        const amount: number = amountCheck(value);
+
+        dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : billAmountString });
         calculatePersonalBill(amount, tipPercentage, tipPercentageCustom, numberOfPeople);
     };
 
     const handleTipPercentageChange = (percentage: number) => {
         dispatch({ type: SET_TIP_PERCENTAGE, payload: percentage });
-        setSelectedPercentage(percentage);
+        // setSelectedPercentage(percentage);
         calculatePersonalBill(billAmount, percentage, tipPercentageCustom, numberOfPeople)
     };
 
     const handleTipPercentageCustomChange = (value: string) => {
-        const percCustom = parseFloat(value);
-        dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: isNaN(percCustom) ? 0 : percCustom });
-        setSelectedPercentage(null);
+        const percCustom = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+        // console.log(percCustom);
+
+        dispatch({ type: SET_TIP_PERCENTAGE, payload: 0 });
+        dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: percCustom });
+        // setSelectedPercentage(null);
         calculatePersonalBill(billAmount, percCustom, tipPercentageCustom, numberOfPeople)
     };
 
     const handleNumberOfPeopleChange = (value: string) => {
-        const count = parseInt(value, 10);
-        dispatch({ type: SET_NUMBER_OF_PEOPLE, payload: isNaN(count) ? 0 : count });
+        const count = isNaN(parseInt(value, 10)) ? 0 : parseInt(value, 10);
+
+        dispatch({ type: SET_NUMBER_OF_PEOPLE, payload: count });
         calculatePersonalBill(billAmount, tipPercentage, tipPercentageCustom, count)
 
     };
 
-    const calculatePersonalBill = (billAmount: number, tipPercentage: number, tipPercentageCustom: number | null, numberOfPeople: number) => {
-        const tipCustom: number = (tipPercentageCustom === null || tipPercentageCustom === 0) ? 0 : tipPercentageCustom;
-        if (billAmount <= 0) return;
-        if (tipPercentage > 0 || tipCustom > 0) {
-            const selectedTipPercentage = tipPercentage > 0 ? tipPercentage : tipCustom;
-            const selectedNumberOfPeople = numberOfPeople > 0 ? numberOfPeople : 1;
-            const totalPersonalTip = (billAmount / selectedNumberOfPeople * selectedTipPercentage / 100).toFixed(2);
-            const totalPersonalAmount = (billAmount / selectedNumberOfPeople * (1 + selectedTipPercentage / 100)).toFixed(2);
-            const totalTips = (billAmount * selectedTipPercentage / 100).toFixed(2);
-            const totalBill = (billAmount * (1 + selectedTipPercentage / 100)).toFixed(2);
+    const calculatePersonalBill = (billAmount: number, tipPercentage: number, tipPercentageCustom: number, numberOfPeople: number) => {
 
-            dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
-            dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
-            dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
-            dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
+        // const tipCustom: number = (tipPercentageCustom === 0) ? 0 : tipPercentageCustom;
+        if (billAmount < 0) return;
+        // if (tipPercentage > 0 || tipPercentageCustom > 0) {
+        const selectedTipPercentage = tipPercentage > 0 ? tipPercentage : tipPercentageCustom;
+        const selectedNumberOfPeople = numberOfPeople > 0 ? numberOfPeople : 1;
+        const totalPersonalTip = (billAmount / selectedNumberOfPeople * selectedTipPercentage / 100).toFixed(2);
+        const totalPersonalAmount = (billAmount / selectedNumberOfPeople * (1 + selectedTipPercentage / 100)).toFixed(2);
+        const totalTips = (billAmount * selectedTipPercentage / 100).toFixed(2);
+        const totalBill = (billAmount * (1 + selectedTipPercentage / 100)).toFixed(2);
 
-        } else if (tipPercentage === 0 && tipCustom === 0 && numberOfPeople === 0) {
-            const totalPersonalTip = 0;
-            const totalPersonalAmount = billAmount.toFixed(2);
-            const totalTips = 0;
-            const totalBill = (billAmount).toFixed(2);
-            dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
-            dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
-            dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
-            dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
-        }
+        dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
+        dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
+        dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
+        dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
 
+        // } else if (tipPercentage === 0 && tipPercentageCustom === 0 && numberOfPeople === 0) {
+        //     const totalPersonalTip = 0;
+        //     const totalPersonalAmount = billAmount.toFixed(2);
+        //     const totalTips = 0;
+        //     const totalBill = (billAmount).toFixed(2);
+        //     dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
+        //     dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
+        //     dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
+        //     dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
+        // } else if (tipPercentage === 0 && tipPercentageCustom === 0 && numberOfPeople > 0) {
+        //     const totalPersonalTip = 0;
+        //     const totalPersonalAmount = (billAmount / numberOfPeople).toFixed(2);
+        //     const totalTips = 0;
+        //     const totalBill = (billAmount).toFixed(2);
+        //     dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
+        //     dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
+        //     dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
+        //     dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
+        // }
 
     }
 
@@ -81,10 +130,11 @@ const SelectTip = () => {
                 <Text style={styles.inputPlaceTitle}>Bill</Text>
                 <TextInput style={styles.inputPlace}
                     placeholder={billAmount === 0 ? "0.00" : ""}
-                    value={billAmount === 0 ? "" : billAmount + ""}
-                    keyboardType="decimal-pad"
+                    value={billAmount === 0 ? "" : billAmountString}
+                    keyboardType="numeric"
                     maxLength={8}
-                    onChangeText={handleBillAmountChange}
+                    onChangeText={checkValue}
+                    onEndEditing={handleBillAmountChange}
                 />
                 <Text style={styles.dollar}>$</Text>
             </View>
@@ -119,9 +169,10 @@ const SelectTip = () => {
                         placeholder={tipPercentageCustom === 0 ? "Custom" : ""}
                         value={tipPercentageCustom === 0 ? "" : tipPercentageCustom + ''}
                         onChangeText={handleTipPercentageCustomChange}
-                        maxLength={8}
+                        maxLength={2}
                         keyboardType="numeric"
                     />
+                    {tipPercentageCustom !== 0 && <Text style={styles.percentSign}>%</Text>}
                 </View>
             </View>
             <View style={styles.countPeopleContainer}>
@@ -133,7 +184,7 @@ const SelectTip = () => {
                     maxLength={4}
                     keyboardType="numeric" />
             </View>
-            <AmountTips />
+            <AmountTips onReset={handleReset} />
         </View >
     )
 }
@@ -154,17 +205,13 @@ const styles = StyleSheet.create({
     },
 
     inputPlaceContainer: {
-        // position: 'relative',
         flex: 1,
         justifyContent: 'flex-start',
-        // marginTop: 76,
 
     },
     inputPlaceTitle: {
         position: 'relative',
         flex: 1,
-        // justifyContent: 'flex-start',
-        // height: 142,
         width: '100 %',
         fontSize: 22,
         fontWeight: '700',
@@ -194,7 +241,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#9fbebe',
     },
-
 
     title: {
         width: '100 %',
@@ -254,49 +300,26 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: '700',
         borderRadius: 10,
-        color: '#62797b',
+        color: '#00464e',
         backgroundColor: '#f3f8fb',
         paddingHorizontal: 16,
     },
 
-    // customInputselected: {
-    //         border: 2px solid #62797b,
-    //     }
+    percentSign: {
+        position: 'absolute',
+        fontSize: 28,
+        fontWeight: '700',
+        color: '#00464e',
+        right: 40,
+        top: 12,
 
-    // customInput:: placeholder: {
-    //         text  align: center,
-    //     },
 
-    //         /* .btn,
-    //         .btn:last-child {
-    //             display: flex,
-    //             justify-content: center;
-    //             align-items: center;
-    //             font-size: 36px;
-    //             font-weight: 700;
-    //             width: 290px;
-    //             height: 96px;
-    //             border-radius: 10px;
-    //             color: #fff;
-    //             background-color: #00464e;
-    //         } */
-    //         .selected,
-    //     .btn: hover,
-    //     .btn: focus,
-    //     .btn: active {
-    //     cursor: pointer;
-    //     background - color: #2ac3ae;
-    // color: #00464e;
-    // },
-
-    //     /* .btn:last-child {
-    //         color: #62797b;
-    //         background-color: #f3f8fb;
-    //     } */
+    },
 
     countPeopleContainer: {
         flex: 1,
     },
+
     countPeopleTitle: {
         flex: 1,
         justifyContent: 'center',

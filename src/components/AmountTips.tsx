@@ -3,10 +3,18 @@ import { StyleSheet, Text, Pressable, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { tipCount, RESET_ALL } from '../redux/store/tipCount/tipCount-actions';
 
-const AmountTips = () => {
+
+interface AmountTipsProps {
+    onReset: () => void;
+}
+
+const AmountTips = ({ onReset }) => {
     const dispatch = useDispatch();
     const { amountTip, amountTotal, totalTips, totalBill } = useSelector((state: tipCount) => state.tipCount);
-    const handleResetAction = () => { dispatch({ type: RESET_ALL }); }
+    const handleResetAction = () => {
+        onReset();
+        dispatch({ type: RESET_ALL });
+    }
 
     return (
         <View style={styles.container}>
