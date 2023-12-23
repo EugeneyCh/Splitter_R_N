@@ -8,7 +8,7 @@ interface AmountTipsProps {
     onReset: () => void;
 }
 
-const AmountTips = ({ onReset }) => {
+function AmountTips({ onReset }) {
     const dispatch = useDispatch();
     const { amountTip, amountTotal, totalTips, totalBill } = useSelector((state: tipCount) => state.tipCount);
     const handleResetAction = () => {

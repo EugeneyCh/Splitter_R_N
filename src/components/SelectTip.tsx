@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_BILL_AMOUNT, SET_TIP_PERCENTAGE, SET_TIP_PERCENTAGE_CUSTOM, SET_NUMBER_OF_PEOPLE, SET_PERSONAL_TIP, SET_PERSONAL_AMOUNT, tipCount, SET_TOTAL_TIPS, SET_TOTAL_BILL } from '../redux/store/tipCount/tipCount-actions';
 import AmountTips from './AmountTips';
 
 
-const SelectTip = () => {
+function SelectTip() {
     const dispatch = useDispatch();
     const { tipPercentage, tipPercentageCustom, numberOfPeople } = useSelector((state: tipCount) => state.tipCount);
     const [billAmountString, setBillAmountString] = useState<string>('0')
     const billAmount: number = billAmountString !== '' ? parseFloat(billAmountString) : 0;
+
+    const { width, height } = useWindowDimensions();
 
     const [isButtonPressed, setIsButtonPressed] = useState(false);
 
@@ -68,12 +70,11 @@ const SelectTip = () => {
 
     const handleTipPercentageCustomChange = (value: string) => {
         const percCustom = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
-        // console.log(percCustom);
 
         dispatch({ type: SET_TIP_PERCENTAGE, payload: 0 });
         dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: percCustom });
         // setSelectedPercentage(null);
-        calculatePersonalBill(billAmount, percCustom, tipPercentageCustom, numberOfPeople)
+        calculatePersonalBill(billAmount, percCustom, 0, numberOfPeople)
     };
 
     const handleNumberOfPeopleChange = (value: string) => {
@@ -101,28 +102,8 @@ const SelectTip = () => {
         dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
         dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
 
-        // } else if (tipPercentage === 0 && tipPercentageCustom === 0 && numberOfPeople === 0) {
-        //     const totalPersonalTip = 0;
-        //     const totalPersonalAmount = billAmount.toFixed(2);
-        //     const totalTips = 0;
-        //     const totalBill = (billAmount).toFixed(2);
-        //     dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
-        //     dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
-        //     dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
-        //     dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
-        // } else if (tipPercentage === 0 && tipPercentageCustom === 0 && numberOfPeople > 0) {
-        //     const totalPersonalTip = 0;
-        //     const totalPersonalAmount = (billAmount / numberOfPeople).toFixed(2);
-        //     const totalTips = 0;
-        //     const totalBill = (billAmount).toFixed(2);
-        //     dispatch({ type: SET_PERSONAL_TIP, payload: totalPersonalTip })
-        //     dispatch({ type: SET_PERSONAL_AMOUNT, payload: totalPersonalAmount })
-        //     dispatch({ type: SET_TOTAL_TIPS, payload: totalTips })
-        //     dispatch({ type: SET_TOTAL_BILL, payload: totalBill })
-        // }
-
     }
-
+    const buttonWidht = (width - 48 - 24) / 2;
 
     return (
         <View style={styles.actionContainer}>
@@ -134,7 +115,7 @@ const SelectTip = () => {
                     keyboardType="numeric"
                     maxLength={8}
                     onChangeText={checkValue}
-                    onEndEditing={handleBillAmountChange}
+                    onEndEditing={(e) => handleBillAmountChange(e.nativeEvent.text)}
                 />
                 <Text style={styles.dollar}>$</Text>
             </View>
@@ -156,7 +137,7 @@ const SelectTip = () => {
                                 color: pressed || isButtonPressed ? '#00464e' : '#fff',
                                 // backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
                             },
-                            styles.btn,
+                            styles.btn, { width: buttonWidht }
                         ]}
                     >
                         {({ pressed }) => (
