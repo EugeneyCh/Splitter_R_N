@@ -84,21 +84,14 @@ const styles = StyleSheet.create({
         paddingTop: 8,
     },
     amount: {
-        flex: 1,
-        // width: 150,
-        // flexDirection: 'row',
+        width: 130,
     },
 
-    // tipContainer,
     totalContainer: {
         height: 72,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-
-    // /* .totalContainer {
-    //     padding-top: 36px;
-    // } */
 
     tipAmountTitle: {
         fontSize: 20,
@@ -113,32 +106,20 @@ const styles = StyleSheet.create({
         color: '#62797b',
         fontWeight: '700',
         letterSpacing: 2,
-        // marginTop: 12,
     },
-
-    // totalAmountTitle: {
-    //     fontSize: 20,
-    //     fontWeight: '700',
-    //     letterSpacing: 2,
-    //     color: '#fff',
-    // },
-
 
     amountTipContainer: {
-        // flex: 1,
-        justifyContent: 'space-between',
+        flex: 1,
     },
 
-
-    //    amountTotal
     amountTip: {
-        width: 140,
+        width: 210,
         textAlign: 'right',
         fontSize: 36,
         fontWeight: '700',
         color: '#2ac3ae',
+        paddingRight: 8,
     },
-
 
     btnReset: {
         justifyContent: 'center',

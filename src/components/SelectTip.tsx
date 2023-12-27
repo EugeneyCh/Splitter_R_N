@@ -18,7 +18,6 @@ function SelectTip() {
     // const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
 
     function checkValue(value: string) {
-        // console.log('Value is ...', value);
         setBillAmountString(handleDecimalsOnValue(value));
     }
 
@@ -33,7 +32,6 @@ function SelectTip() {
             return "";
         }
     }
-
 
     const amountCheck = (value: string) => {
         const amount: string = handleDecimalsOnValue(value);
@@ -51,11 +49,7 @@ function SelectTip() {
         setBillAmountString('0');
     };
 
-
     const handleBillAmountChange = (value: string) => {
-        console.log('Value = ', value);
-
-        // const amount = parseFloat(value);
         const amount: number = amountCheck(value);
 
         dispatch({ type: SET_BILL_AMOUNT, payload: isNaN(amount) ? 0 : billAmountString });
@@ -178,7 +172,6 @@ const styles = StyleSheet.create({
     actionContainer: {
         flex: 1,
         width: '100%',
-        // height: '90%',
         backgroundColor: '#fff',
         paddingHorizontal: 24,
         borderTopLeftRadius: 20,
@@ -249,8 +242,6 @@ const styles = StyleSheet.create({
         width: 168,
         height: 64,
         borderRadius: 8,
-        // color: '#fff',
-        // backgroundColor: '#00464e',
     },
     text: {
         height: '100 %',
@@ -260,14 +251,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingTop: 4,
     },
-    // selected: {
-    //     // btn: hover,
-    //     // btn: focus,
-    //     // btn: active 
-    //     cursor: 'pointer',
-    //     backgroundColor: '#2ac3ae',
-    //     color: '#00464e',
-    // },
 
     customInputArea: {
         flex: 1,
@@ -293,8 +276,6 @@ const styles = StyleSheet.create({
         color: '#00464e',
         right: 40,
         top: 12,
-
-
     },
 
     countPeopleContainer: {
