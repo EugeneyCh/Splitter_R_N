@@ -1,14 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Header from './src/components/Header';
-// import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
-import { useFonts } from 'expo-font';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import SelectTip from './src/components/SelectTip';
-import AmountTips from './src/components/AmountTips';
 
 export default function App() {
   return (

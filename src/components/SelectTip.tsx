@@ -15,14 +15,11 @@ function SelectTip() {
 
     const [isButtonPressed, setIsButtonPressed] = useState(false);
 
-    // const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null);
-
     function checkValue(value: string) {
         setBillAmountString(handleDecimalsOnValue(value));
     }
 
     function handleDecimalsOnValue(value: string): string {
-
         const regex = /([0-9]*[\\.,]{0,1}[0-9]{0,2})/s;
         const match = value === undefined ? '' : value.replace(/,/g, ".").match(regex);
 
@@ -58,7 +55,6 @@ function SelectTip() {
 
     const handleTipPercentageChange = (percentage: number) => {
         dispatch({ type: SET_TIP_PERCENTAGE, payload: percentage });
-        // setSelectedPercentage(percentage);
         calculatePersonalBill(billAmount, percentage, tipPercentageCustom, numberOfPeople)
     };
 
@@ -67,7 +63,6 @@ function SelectTip() {
 
         dispatch({ type: SET_TIP_PERCENTAGE, payload: 0 });
         dispatch({ type: SET_TIP_PERCENTAGE_CUSTOM, payload: percCustom });
-        // setSelectedPercentage(null);
         calculatePersonalBill(billAmount, percCustom, 0, numberOfPeople)
     };
 
@@ -81,9 +76,7 @@ function SelectTip() {
 
     const calculatePersonalBill = (billAmount: number, tipPercentage: number, tipPercentageCustom: number, numberOfPeople: number) => {
 
-        // const tipCustom: number = (tipPercentageCustom === 0) ? 0 : tipPercentageCustom;
         if (billAmount < 0) return;
-        // if (tipPercentage > 0 || tipPercentageCustom > 0) {
         const selectedTipPercentage = tipPercentage > 0 ? tipPercentage : tipPercentageCustom;
         const selectedNumberOfPeople = numberOfPeople > 0 ? numberOfPeople : 1;
         const totalPersonalTip = (billAmount / selectedNumberOfPeople * selectedTipPercentage / 100).toFixed(2);
@@ -117,7 +110,6 @@ function SelectTip() {
             <View style={styles.btnList}>
                 {['5', '10', '15', '25', '50'].map((item: string) => (
                     <Pressable key={item}
-                        // style={styles.btn}
                         onPress={() => {
                             handleTipPercentageChange(parseInt(item, 10));
                             setIsButtonPressed(true);
@@ -129,7 +121,6 @@ function SelectTip() {
                             {
                                 backgroundColor: pressed || (tipPercentage === parseInt(item, 10)) ? '#2ac3ae' : '#00464e',
                                 color: pressed || isButtonPressed ? '#00464e' : '#fff',
-                                // backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
                             },
                             styles.btn, { width: buttonWidht }
                         ]}
@@ -154,7 +145,7 @@ function SelectTip() {
                 <Text style={styles.countPeopleTitle}>Number of People</Text>
                 <TextInput style={styles.countPeopleInput}
                     placeholder={numberOfPeople <= 0 ? "Enter a valid number" : ""}
-                    value={numberOfPeople <= 0 ? "" : numberOfPeople.toString()}
+                    value={numberOfPeople <= 0 ? "" : numberOfPeople + ""}
                     onChangeText={handleNumberOfPeopleChange}
                     maxLength={4}
                     keyboardType="numeric" />
@@ -195,7 +186,6 @@ const styles = StyleSheet.create({
     },
 
     inputPlace: {
-        // inlineImageLeft='search_icon'   !!!
         height: 92,
         borderRadius: 10,
         color: '#00464e',
@@ -239,7 +229,6 @@ const styles = StyleSheet.create({
     btn: {
         fontSize: 36,
         fontWeight: '700',
-        width: 168,
         height: 64,
         borderRadius: 8,
     },
